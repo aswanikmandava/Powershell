@@ -1,0 +1,56 @@
+$TextInfo = (Get-Culture).TextInfo;
+function GetCounterValues($include_total, $results , $prefix)  {
+  $output = ""
+  if(($results | Select-Object InstanceName -Unique).count -gt 2) {$include_total = 1}
+  foreach($result in $results)  {
+    $instance_name = $result.InstanceName.ToUpper()    
+    if($instance_name -eq "_TOTAL") {        
+        $instance_name = "TOTAL"
+        if(-not $include_total) {continue}
+    } else { if ($instance_name.Length -ge 2) {
+         if($instance_name.IndexOf(" ") -gt 0) {
+           $instance_name = $instance_name.substring($instance_name.Length-2, 2)            
+           }            
+       } else {continue}
+    }          
+     $metric = $TextInfo.ToTitleCase($($result.Path.split("\\")[-1] -replace "\(","" -replace "\)","")) -replace " ","" -replace "/sec","PerSec" -replace "\.","" -replace "/","" -replace "%", "Percent"  
+    $instance_name = ($instance_name  -replace ":","" )
+    $output += "$($prefix)DiskInstance : $($instance_name )`r`n$prefix$metric : $($result.CookedValue)`r`n`r`n"
+ }
+ return $output
+}
+# Filter Logical Drive of type FileSystem with size >350MB excluding System Reserved volume
+$FS_SIZE_MB = 350
+$filter = ""
+$drive = ""
+$ldisks = Get-WmiObject -Class Win32_logicaldisk -Filter "DriveType = '3' and VolumeName != 'System Reserved'"
+$info = $ldisks | Select-Object -Property DeviceID, DriveType, VolumeName, @{L='FreeSpaceMB';E={"{0:N2}" -f ($_.FreeSpace /1MB)}}, @{L="Capacity";E={"{0:N2}" -f ($_.Size/1MB)}}, @{L="DriveFlag";E={ $dsize = [int]($_.Size/1MB); if($dsize -gt $FS_SIZE_MB) {"Yes"} else {"No"}} }
+$ldisk_info = $info | ? { $_.DriveFlag -eq "Yes" }
+$cnt = 1
+foreach ($ldisk in $ldisk_info) {
+    $drive = $ldisk.DeviceID
+	if ($cnt -eq 1) {
+		$filter = "`$_.InstanceName -match '{0}'" -f ($drive)
+	}
+	else {
+		$filter += " -Or `$_.InstanceName -match '{0}'" -f ($drive)
+	}
+	$cnt += 1
+}
+# Convert string object to scriptblock object
+$blk_filter = [scriptblock]::create($filter)
+$include_total = 0
+$results = (Get-Counter "\PhysicalDisk(*)\% Disk Time", "\PhysicalDisk(*)\Current Disk Queue Length", 
+"\PhysicalDisk(*)\Avg. Disk Sec/Transfer","\PhysicalDisk(*)\Disk Reads/sec","\PhysicalDisk(*)\Disk Writes/sec",
+"\PhysicalDisk(*)\Disk Transfers/sec" -ErrorAction SilentlyContinue).CounterSamples
+$results = $results | Where-Object $blk_filter
+
+$include_total = 0
+$output = GetCounterValues $include_total $results "Physical" 
+$results = (Get-Counter "\LogicalDisk(*)\% Disk Time","\LogicalDisk(*)\Free Megabytes","\LogicalDisk(*)\Avg. Disk Bytes/Read",
+ "\LogicalDisk(*)\Avg. Disk Bytes/Write", "\LogicalDisk(*)\Avg. Disk Queue Length", "\LogicalDisk(*)\Avg. Disk sec/Read", 
+ "\LogicalDisk(*)\Avg. Disk sec/Write", "\LogicalDisk(*)\Current Disk Queue Length", "\LogicalDisk(*)\Disk Reads/sec", 
+ "\LogicalDisk(*)\Disk Writes/sec","\LogicalDisk(*)\Disk Transfers/sec" -ErrorAction SilentlyContinue).CounterSamples | Where-Object $blk_filter
+$include_total = 0
+$output += GetCounterValues $include_total $results "Logical"
+Write-Output $output

@@ -1,0 +1,50 @@
+from silo_common.snippets import logger
+from silo_common.snippets.powershell import powershell_winrm
+from collections import namedtuple
+
+logger = logger(filename='/tmp/myLog.txt')
+COLLECTION_PROBLEM = False
+PROBLEM_STR = ''
+
+logger.debug("----- STARTED Get OS Build PROCESSING -----")
+# Initialize results object
+results = {}
+
+PS_CMD = "Get-WmiObject Win32_OperatingSystem | Select-Object -Property BuildNumber"
+
+# Execute the PowerShell statement and process the results.
+try:
+    Request = namedtuple('Request', 'req_id key_column request app_id')
+    request = Request(-1, 'BuildNumber', PS_CMD, self.app_id)
+    data, error = powershell_winrm(self.did, self.ip, request, self.cred_details, True, None, None, self.logger)
+    logger.info("PS RESPONSE - Data: %s, error: %s" % (data, error))
+    # Identify collection problem
+    if error is not None and len(error) > 0:
+        COLLECTION_PROBLEM = True
+        PROBLEM_STR = "Error: %s" % error
+        self.logger.ui_debug("PowerShell Error: %s" % (error))
+    elif data is not None:
+        build_number = data['BuildNumber']
+        for key in build_number.keys():
+            os_build_number = int(build_number[key])
+            logger.debug("BuildNumber: %s" %(os_build_number))
+            # self.logger.ui_debug("BuildNumber: %s" %(os_build_number))
+            # Check if OS is server 2008 R2 or above
+            if os_build_number >= 7601:
+                # Set results object - discovery
+                results['discovery'] = [(0, True)]
+
+            logger.debug("Results object: %s" %(results))
+            # self.logger.ui_debug("Results object: %s" %(results))
+
+except Exception, err:
+    # self.logger.ui_debug("Error in processing for did:%s, app id:%s, error: %s" % (self.did, self.app_id, err))
+    logger.error("Error in processing for did:%s, app id:%s, error: %s" % (self.did, self.app_id, err))
+
+try:
+    result_handler.update(results)
+except Exception, err:
+    # self.logger.ui_debug("Error updating result set for did:%s, app id:%s, error: %s" % (self.did, self.app_id, err))
+    logger.error("Error updating result set for did:%s, app id:%s, error: %s" % (self.did, self.app_id, err))
+
+logger.debug("----- FINISHED Get OS Build PROCESSING -----")

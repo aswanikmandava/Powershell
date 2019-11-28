@@ -1,0 +1,24 @@
+[PsObject[]]$domainStatus = @()
+
+$object1 = New-Object -TypeName PSObject
+$object1 | Add-Member -Name 'Source' -MemberType NoteProperty -Value 'csc.nycnet'
+$object1 | Add-Member -Name 'Name' -MemberType NoteProperty -Value 'sts.nycnet'
+$object1 | Add-Member -Name 'Status' -MemberType NoteProperty -Value 'Valid'
+$object1 | Add-Member -Name 'ErrorMsg' -MemberType NoteProperty -Value $null
+$domainStatus += $object1
+
+$object2 = New-Object -TypeName PSObject
+$object2 | Add-Member -Name 'Source' -MemberType NoteProperty -Value 'csc.nycnet'
+$object2 | Add-Member -Name 'Name' -MemberType NoteProperty -Value 'cs.nycnet'
+$object2 | Add-Member -Name 'Status' -MemberType NoteProperty -Value 'Valid'
+$object2 | Add-Member -Name 'ErrorMsg' -MemberType NoteProperty -Value $null
+$domainStatus += $object2
+
+$object3 = New-Object -TypeName PSObject
+$object3 | Add-Member -Name 'Source' -MemberType NoteProperty -Value 'csc.nycnet'
+$object3 | Add-Member -Name 'Name' -MemberType NoteProperty -Value 'fjc.csc.nycnet'
+$object3 | Add-Member -Name 'Status' -MemberType NoteProperty -Value 'Valid'
+$object3 | Add-Member -Name 'ErrorMsg' -MemberType NoteProperty -Value $null
+$domainStatus += $object3
+
+$domainStatus | Select-Object -Property Source, Name, Status, ErrorMsg

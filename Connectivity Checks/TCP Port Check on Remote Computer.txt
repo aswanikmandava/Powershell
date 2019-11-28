@@ -1,0 +1,73 @@
+PS C:\Script_Test> Enter-PSSession -ComputerName MSPWVA-CTWHC14.CS.NYCNET -Credential $credential -Authentication Kerberos
+[mspwva-ctwhc14.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $PSVersionTable
+
+Name                           Value
+----                           -----
+WSManStackVersion              3.0
+PSCompatibleVersions           {1.0, 2.0, 3.0}
+SerializationVersion           1.1.0.1
+BuildVersion                   6.2.9200.22198
+PSVersion                      3.0
+CLRVersion                     4.0.30319.1026
+PSRemotingProtocolVersion      2.2
+
+
+[mspwva-ctwhc14.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> Get-WindowsFeature -Name Telnet-Client
+
+Display Name                                            Name
+------------                                            ----
+[X] Telnet Client                                       Telnet-Client
+
+
+[mspwva-ctwhc14.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $tcp = New-Object System.Net.Sockets.TcpClient
+[mspwva-ctwhc14.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $tcp
+
+
+Client              : System.Net.Sockets.Socket
+Available           : 0
+Connected           : False
+ExclusiveAddressUse : False
+ReceiveBufferSize   : 8192
+SendBufferSize      : 8192
+ReceiveTimeout      : 0
+SendTimeout         : 0
+LingerState         : System.Net.Sockets.LingerOption
+NoDelay             : False
+
+
+
+[mspwva-ctwhc14.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $tcp.connect('10.155.225.157', 443)
+[mspwva-ctwhc14.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $tcp
+
+
+Client              : System.Net.Sockets.Socket
+Available           : 0
+Connected           : True
+ExclusiveAddressUse : False
+ReceiveBufferSize   : 8192
+SendBufferSize      : 8192
+ReceiveTimeout      : 0
+SendTimeout         : 0
+LingerState         : System.Net.Sockets.LingerOption
+NoDelay             : False
+
+
+
+[mspwva-ctwhc14.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $tcp.Dispose()
+[mspwva-ctwhc14.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $tcp
+
+
+Client              :
+Available           :
+Connected           :
+ExclusiveAddressUse :
+ReceiveBufferSize   :
+SendBufferSize      :
+ReceiveTimeout      :
+SendTimeout         :
+LingerState         :
+NoDelay             :
+
+
+
+[mspwva-ctwhc14.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents>

@@ -1,0 +1,4 @@
+# https://mcpmag.com/articles/2018/01/26/view-drive-information-with-powershell.aspx
+$ldisks = Get-WmiObject -Class Win32_logicaldisk -Filter "DriveType = '3' and VolumeName != 'System Reserved'"
+$info = $ldisks | Select-Object -Property DeviceID, DriveType, VolumeName, @{L='FreeSpaceMB';E={"{0:N2}" -f ($_.FreeSpace /1MB)}}, @{L="Capacity";E={"{0:N2}" -f ($_.Size/1MB)}}, @{L="DriveFlag";E={ $dsize = [int]($_.Size/1MB); if($dsize -ge 200) {"Yes"} else {"No"}} }
+$info | ? { $_.DriveFlag -eq "Yes" }

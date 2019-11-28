@@ -1,0 +1,5 @@
+$server = "10.152.107.115"
+$defaultCtx = (([adsi]"LDAP://$server/rootDSE").defaultNamingContext)
+$searcher = [adsisearcher]"(&(objectClass=User)(sAMAccountName=svc-ScienceLogic))"
+$searcher.SearchRoot = [adsi]"LDAP://$server/$defaultCtx"
+$searcher.FindAll() | % { $_.Path }

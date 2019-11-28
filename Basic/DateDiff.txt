@@ -1,0 +1,6 @@
+$start = [datetime]'2019-02-25 14:51:03'
+$end = Get-Date
+
+$duration = New-TimeSpan -Start $start -End $end
+
+$duration

@@ -1,0 +1,87 @@
+# Name: SysVol Replication Checker
+# Description: This script is designed to execute on Windows Domain Controller only
+# It creates a local file on the default SYSVOL root directory
+# It then fetches the list of domain controllers belong to the current DC domain using "nltest" native command
+# Tests the SMB port connection to each DC
+# Validates if the same file and content exists on each target DC
+$ErrorActionPreference = "SilentlyContinue"
+$ProgressPreference = "SilentlyContinue"
+$smbPort = "445"
+$timeOut = "500"
+
+Function TCP_Port_Check($fqdn,$port,$timeOut) {
+    $tcpSocket = New-Object System.Net.Sockets.TcpClient
+    $portConnect = $tcpSocket.BeginConnect($fqdn,$port,$null,$null)
+    $tcpPortWait = $portConnect.AsyncWaitHandle.WaitOne($timeOut,$false)
+    If(!$tcpPortWait) {
+        $tcpSocket.Close()
+        Return "FAIL"
+    } Else {
+        $tcpSocket.EndConnect($portConnect) | Out-Null
+        $tcpSocket.Close()
+        $ErrorActionPreference = "Continue"
+        Return "SUCCESS"
+    }
+}
+
+try
+{    
+    [PsObject[]]$dc_status = @()
+    $sysvol_root = 'C:\Windows\SYSVOL\domain\scripts\'
+    $sysInfo = Get-WmiObject -Class Win32_ComputerSystem
+    $domain = $sysInfo.Domain.ToLower()
+    $hostname = $sysInfo.Name.ToLower()
+    $fqdn = "{0}.{1}" -f $hostname, $domain
+    $file_name = "SL_Test_" + $hostname + ".txt"
+    $sysvol_file = $sysvol_root + $file_name
+    $output = cmd /c "nltest /dclist:$domain 2>&1"
+    # exclude the current AD server
+    $output2 = $output | ? {$_.Contains("[DS]") -and ! $_.Contains($fqdn)}
+    $dcList = @()
+    # Extract fqdn of DCs from output and add to array
+    ForEach ($Item in $output2) {
+    	$dcList += $Item.trim().split(" ")[0]
+    }
+    # Get a random number between 0 and 10000
+    $content = Get-Random -Maximum 10000
+    # Create file in local FS
+    Set-Content $content -Path $sysvol_file
+    # Wait 500 ms
+    Start-Sleep -Milliseconds 500
+	
+    ForEach ($ds in $dcList) {
+        $sync_status = 'Unknown'
+        $sync_content = 'Unknown'
+    	$objectPath = "\\" + $ds + "\Netlogon\" + $file_name
+    	$object = New-Object -TypeName PSObject
+    	$object | Add-Member -Name 'Target' -MemberType NoteProperty -Value $ds
+    	$object | Add-Member -Name 'Status' -MemberType NoteProperty -Value $sync_status
+        $object | Add-Member -Name 'Content' -MemberType NoteProperty -Value $sync_content
+        $object | Add-Member -Name 'ErrorMsg' -MemberType NoteProperty -Value $null
+        # Check SMB port connection
+        $result = TCP_Port_Check $ds $smbPort $timeOut
+    	If ($result -eq "SUCCESS") {
+    	# check if the file exists and content matches
+    	    If (Test-Path -Path $objectPath) {
+    	        $dest_content = Get-Content -Path $objectPath
+    	    	$object.Content = $dest_content
+    	    	If ($content -eq $dest_content) {
+    	    	    $object.Status = 'In Sync'
+    	    	}
+    	    	Else {
+    	    	    $object.Status = 'Out of Sync'
+    	    	}
+    	    }
+    	}
+    	ElseIf ($result -eq "FAIL") {
+    	    $object.Status = "Skipped"
+    	    $object.ErrorMsg = "SMB port connection timed out"
+    	}
+    # Add object to the array
+    $dc_status += $object
+    }
+}
+catch
+{
+}
+$dc_status | Select-Object -Property *

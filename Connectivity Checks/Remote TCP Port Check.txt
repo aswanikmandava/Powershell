@@ -1,0 +1,33 @@
+Function TCP_Port_Check($fqdn,$port,$timeOut) {
+	$tcpSocket = New-Object System.Net.Sockets.TcpClient
+	$portConnect = $tcpSocket.BeginConnect($fqdn,$port,$null,$null)
+	$tcpPortWait = $portConnect.AsyncWaitHandle.WaitOne($timeOut,$false)
+	If(!$tcpPortWait) {
+		$tcpSocket.Close()
+		# Write-Host "Connection Timeout"
+		Return "ERROR"
+	} Else {
+		$ErrorActionPreference = "SilentlyContinue"
+		$tcpSocket.EndConnect($portConnect) | Out-Null
+		# Last exit status
+		# $True - Success
+		# $False - Failure
+		# If (!$?) {
+			# Write-Host $error[0]
+		#	Return "ERROR"
+		# } 
+		$tcpSocket.Close()
+		$ErrorActionPreference = "Continue"
+		Return "SUCCESS"
+	}
+}
+	$port = "445"
+	$timeOut = "500" # milli secs
+	$fqdn = "awsava-ctwslc01.csc.nycnet"
+	$result = TCP_Port_Check $fqdn $port $timeOut
+	If ($result -eq "SUCCESS") {
+		Write-Host "Port check is successful !!!"
+	}
+	If ($result -eq "ERROR") {
+		Write-Host "Port check failure !!!"
+	}

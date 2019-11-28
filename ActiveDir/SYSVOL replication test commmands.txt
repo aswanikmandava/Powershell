@@ -1,0 +1,472 @@
+PS C:\Script_Test> Enter-PSSession -ComputerName PSPWVI-CTWCS11.cs.nycnet -Credential $credential
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $ADDomainToWriteTo = $(Get-WmiObject -Class Win32_ComputerSystem).Domain
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $contextADDomainToWriteTo = New-Object System.DirectoryServices.ActiveDirectory.DirectoryContext("Domain",$ADDomainToWriteTo)
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $ListOfDCsInADDomain = [System.DirectoryServices.ActiveDirectory.DomainController]::findall($contextADDomainToWriteTo)
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $ListOfRWDCsInADDomain = $ListOfDCsInADDomain | ?{$_.InboundConnections -ne $null -and !($_.InboundConnections -match "RODC Connection")}
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $ListOfRODCsInADDomain = $ListOfDCsInADDomain | ?{$_.InboundConnections -match "RODC Connection"}
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $ListOfRODCsInADDomain
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $ListOfRWDCsInADDomain
+
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:25 PM
+HighestCommittedUsn        : 202854540
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.155.62.62
+SiteName                   : MS
+SyncFromAllServersCallback :
+InboundConnections         : {3de861ea-590f-47a5-b483-e63bd0fe506d, 66349b59-9cfd-4413-ad9d-ddfd266e74e7,
+                             820109e4-bc6c-444f-b33b-d5e211a5c2a9}
+OutboundConnections        : {7c37318e-638d-4872-b355-f508e78a9830, 94fb0533-d8bd-4ab7-a981-81f76cf1166b,
+                             ebab1acd-58a2-4d3e-8d66-2a6b5c8cb7c2, 318ec214-e559-40b4-ae2d-16ec4d669763}
+Name                       : MSPWPI-CTWCS01.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:25 PM
+HighestCommittedUsn        : 93573030
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.155.4.21
+SiteName                   : MT
+SyncFromAllServersCallback :
+InboundConnections         : {2a8cd49c-d3e3-40b7-909a-35ef0991a67c, d1284bde-7cc4-4451-bc54-6251539eae3e}
+OutboundConnections        : {30471a19-f095-40a6-9081-fbcb380881ca, 645f4148-1a5a-428a-8bb6-35142e7fb0e0}
+Name                       : MTPRAWVTRWDC02.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:25 PM
+HighestCommittedUsn        : 214374164
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {SchemaRole, NamingRole, PdcRole, RidRole...}
+Domain                     : cs.nycnet
+IPAddress                  : 10.155.62.63
+SiteName                   : MS
+SyncFromAllServersCallback :
+InboundConnections         : {23313060-c10a-4c6d-a8ec-a946aea30a5d, e60922a1-967e-42b8-ac4d-1bf699d492df,
+                             f1e8a306-24f7-4094-b463-86e64083e9dd}
+OutboundConnections        : {d8ba31e4-2400-4c19-9744-e7e84eb33e05, 11cada95-598d-459f-891d-0b5f23c6f8fb}
+Name                       : MSPWPI-CTWCS02.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=ForestDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:25 PM
+HighestCommittedUsn        : 193443648
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.155.62.68
+SiteName                   : MS
+SyncFromAllServersCallback :
+InboundConnections         : {1b0df4f4-f532-4545-bd82-88580f4888f4, 21d14750-5eb8-47e1-9971-1f5527b9616d,
+                             768ffa9f-099d-46fa-a8f6-70ce941a0d1f, d46e93ee-a8ba-4123-970a-d4fa322e5ba1}
+OutboundConnections        : {624de629-a4dc-4b13-b9dd-7c0d7ccb85fd, 07b6ecb7-1b50-4f0e-95c3-cf1d8acdeb13,
+                             137bd7ce-e14d-42e6-94df-ae72b3b637b9}
+Name                       : MSPWPI-CTWCS04.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:25 PM
+HighestCommittedUsn        : 183020129
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.155.60.48
+SiteName                   : MS
+SyncFromAllServersCallback :
+InboundConnections         : {5a540d2c-a61a-4010-ba87-44daeaefe055, 624de629-a4dc-4b13-b9dd-7c0d7ccb85fd,
+                             e5b7e1bd-a2aa-40d6-948b-8b4fc4955dce}
+OutboundConnections        : {21d14750-5eb8-47e1-9971-1f5527b9616d, a798ca47-6e56-4649-ba88-cb4ecdf193ad}
+Name                       : MSPWVI-CTWCS06.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:25 PM
+HighestCommittedUsn        : 175609448
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.155.60.225
+SiteName                   : MS
+SyncFromAllServersCallback :
+InboundConnections         : {137bd7ce-e14d-42e6-94df-ae72b3b637b9, 7106b8e1-3761-482b-bb15-4da54b93995e,
+                             ebab1acd-58a2-4d3e-8d66-2a6b5c8cb7c2}
+OutboundConnections        : {c7316041-b694-4e16-ae41-426662f1e162, 1b0df4f4-f532-4545-bd82-88580f4888f4}
+Name                       : MSPWVI-CTWCS07.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:25 PM
+HighestCommittedUsn        : 183030042
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.155.60.226
+SiteName                   : MS
+SyncFromAllServersCallback :
+InboundConnections         : {b5e722f2-d333-4c64-85a5-5f3639f24809, d414c10b-8128-470e-909b-c2be2ec67b02,
+                             d8ba31e4-2400-4c19-9744-e7e84eb33e05}
+OutboundConnections        : {f1e8a306-24f7-4094-b463-86e64083e9dd, a88e76a4-81cf-4fd4-bd15-ce95589f1b42,
+                             81361d1e-2ff2-4188-bf87-b5eff469777f}
+Name                       : MSPWVI-CTWCS08.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:25 PM
+HighestCommittedUsn        : 178774530
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.155.60.227
+SiteName                   : MS
+SyncFromAllServersCallback :
+InboundConnections         : {318ec214-e559-40b4-ae2d-16ec4d669763, a88e76a4-81cf-4fd4-bd15-ce95589f1b42,
+                             b0664f3e-7e74-420b-856c-9acb2ea1c166}
+OutboundConnections        : {b5e722f2-d333-4c64-85a5-5f3639f24809, 7cee4901-1479-41e8-99d5-9e33ce79669d,
+                             820109e4-bc6c-444f-b33b-d5e211a5c2a9, e5b7e1bd-a2aa-40d6-948b-8b4fc4955dce...}
+Name                       : MSPWVI-CTWCS09.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:26 PM
+HighestCommittedUsn        : 119398930
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.155.60.228
+SiteName                   : MS-Office365-Hybrid
+SyncFromAllServersCallback :
+InboundConnections         : {21598ae9-7187-4f98-aa30-a92be87ef715, 5df43813-447d-4650-9cf8-1031e27320af,
+                             8959fd2b-84d5-4fcc-8d58-268c572f6a86, a92d23c6-8676-4914-91f1-24e716e1f221...}
+OutboundConnections        : {}
+Name                       : MSPWVI-CTWCS10.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:26 PM
+HighestCommittedUsn        : 176778036
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.155.60.49
+SiteName                   : MS
+SyncFromAllServersCallback :
+InboundConnections         : {7c37318e-638d-4872-b355-f508e78a9830, 7cee4901-1479-41e8-99d5-9e33ce79669d,
+                             81361d1e-2ff2-4188-bf87-b5eff469777f}
+OutboundConnections        : {b0664f3e-7e74-420b-856c-9acb2ea1c166, 3de861ea-590f-47a5-b483-e63bd0fe506d,
+                             d414c10b-8128-470e-909b-c2be2ec67b02}
+Name                       : MSPWVI-CTWCS05.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:26 PM
+HighestCommittedUsn        : 102284006
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.141.6.23
+SiteName                   : PS
+SyncFromAllServersCallback :
+InboundConnections         : {9a05bfa1-62cb-4479-9ac7-41319e8a8dbf, ef1ab117-c2d9-4c7a-811a-2e2676bd5677}
+OutboundConnections        : {b2368146-cb21-4cae-aed5-1a520b287c2f, df72c73a-8f38-4a6c-a991-4e3c51d149d7}
+Name                       : PSPWVI-CTWCS11.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:26 PM
+HighestCommittedUsn        : 103474410
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.141.6.24
+SiteName                   : PS
+SyncFromAllServersCallback :
+InboundConnections         : {056233c9-bb51-42fe-b0f2-7d903535b3b0, 967718dc-a7d8-4da1-a491-dcc15361512d,
+                             MSPWVI-CTWCS08}
+OutboundConnections        : {9d6b46fd-600d-44ce-9637-e8922051b109, ea523583-10a3-4056-8db2-6453ea223340}
+Name                       : PSPWVI-CTWCS12.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:26 PM
+HighestCommittedUsn        : 164384144
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.155.62.66
+SiteName                   : MS
+SyncFromAllServersCallback :
+InboundConnections         : {07b6ecb7-1b50-4f0e-95c3-cf1d8acdeb13, 78ceacfc-07f0-417d-b31d-080b7e32103b,
+                             94fb0533-d8bd-4ab7-a981-81f76cf1166b, c7316041-b694-4e16-ae41-426662f1e162}
+OutboundConnections        : {66349b59-9cfd-4413-ad9d-ddfd266e74e7, 7106b8e1-3761-482b-bb15-4da54b93995e,
+                             8761d03c-9728-4990-be05-4fa5daab19bf, 768ffa9f-099d-46fa-a8f6-70ce941a0d1f}
+Name                       : MSPWPI-CTWCS03.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:26 PM
+HighestCommittedUsn        : 95541141
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.141.6.58
+SiteName                   : PS
+SyncFromAllServersCallback :
+InboundConnections         : {b2368146-cb21-4cae-aed5-1a520b287c2f, e363627e-50ce-4280-bb78-416d8564d906,
+                             ea523583-10a3-4056-8db2-6453ea223340}
+OutboundConnections        : {9a05bfa1-62cb-4479-9ac7-41319e8a8dbf, 967718dc-a7d8-4da1-a491-dcc15361512d}
+Name                       : PSPWVI-CTWCS15.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:26 PM
+HighestCommittedUsn        : 97112794
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.141.6.59
+SiteName                   : PS
+SyncFromAllServersCallback :
+InboundConnections         : {4c9484d6-29f9-4680-840b-dedaba77ac0e, df72c73a-8f38-4a6c-a991-4e3c51d149d7}
+OutboundConnections        : {ef1ab117-c2d9-4c7a-811a-2e2676bd5677, 376a0eab-42ca-4e6c-8245-69a73ab90147}
+Name                       : PSPWVI-CTWCS16.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:26 PM
+HighestCommittedUsn        : 96739036
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.141.6.60
+SiteName                   : PS
+SyncFromAllServersCallback :
+InboundConnections         : {376a0eab-42ca-4e6c-8245-69a73ab90147, 9d6b46fd-600d-44ce-9637-e8922051b109}
+OutboundConnections        : {056233c9-bb51-42fe-b0f2-7d903535b3b0, 4c9484d6-29f9-4680-840b-dedaba77ac0e}
+Name                       : PSPWVI-CTWCS17.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:26 PM
+HighestCommittedUsn        : 54832266
+OSVersion                  : Windows Server 2008 R2 Enterprise
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.141.6.61
+SiteName                   : PS-Office365-Hybrid
+SyncFromAllServersCallback :
+InboundConnections         : {842b9f96-f449-49df-9b96-99793931e08e}
+OutboundConnections        : {}
+Name                       : PSPWVI-CTWCS18.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:26 PM
+HighestCommittedUsn        : 48651430
+OSVersion                  : Windows Server 2012 R2 Datacenter
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.155.61.157
+SiteName                   : MT
+SyncFromAllServersCallback :
+InboundConnections         : {1e4b3173-add5-4084-bb7c-69888f76b813, 4eb48b03-9408-4362-b2cd-66de7cdc059c,
+                             645f4148-1a5a-428a-8bb6-35142e7fb0e0}
+OutboundConnections        : {cedcd393-29ac-4043-912c-74cfe814512a, d1284bde-7cc4-4451-bc54-6251539eae3e}
+Name                       : mspwvi-ctwcsr01.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:26 PM
+HighestCommittedUsn        : 46765249
+OSVersion                  : Windows Server 2012 R2 Datacenter
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.155.61.158
+SiteName                   : MT
+SyncFromAllServersCallback :
+InboundConnections         : {30471a19-f095-40a6-9081-fbcb380881ca, cedcd393-29ac-4043-912c-74cfe814512a}
+OutboundConnections        : {2a8cd49c-d3e3-40b7-909a-35ef0991a67c, 4eb48b03-9408-4362-b2cd-66de7cdc059c}
+Name                       : mspwvi-ctwcsr02.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:26 PM
+HighestCommittedUsn        : 31707912
+OSVersion                  : Windows Server 2012 R2 Datacenter
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.155.61.168
+SiteName                   : MS-ARS-App
+SyncFromAllServersCallback :
+InboundConnections         : {95df0cd5-e9b2-4b7b-a857-24fc2c7f18c5}
+OutboundConnections        : {784e211a-5725-46b6-8923-a6a0ba81ed39}
+Name                       : mspwvi-ctwcs19.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:27 PM
+HighestCommittedUsn        : 23090682
+OSVersion                  : Windows Server 2012 R2 Datacenter
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.141.6.121
+SiteName                   : PS-ARS-App
+SyncFromAllServersCallback :
+InboundConnections         : {a92df255-7d1f-40f7-9739-3deb88aee7bd}
+OutboundConnections        : {}
+Name                       : pspwvi-ctwcs22.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:27 PM
+HighestCommittedUsn        : 32339523
+OSVersion                  : Windows Server 2012 R2 Datacenter
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.155.61.169
+SiteName                   : MS-ARS-App
+SyncFromAllServersCallback :
+InboundConnections         : {053dd567-fc1b-4e54-bb44-c93526154ce3, 784e211a-5725-46b6-8923-a6a0ba81ed39}
+OutboundConnections        : {95df0cd5-e9b2-4b7b-a857-24fc2c7f18c5}
+Name                       : mspwvi-ctwcs20.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+Forest                     : cs.nycnet
+CurrentTime                : 8/5/2019 7:25:27 PM
+HighestCommittedUsn        : 99334995
+OSVersion                  : Windows Server 2012 R2 Datacenter
+Roles                      : {}
+Domain                     : cs.nycnet
+IPAddress                  : 10.155.61.170
+SiteName                   : MS
+SyncFromAllServersCallback :
+InboundConnections         : {11cada95-598d-459f-891d-0b5f23c6f8fb, 8761d03c-9728-4990-be05-4fa5daab19bf,
+                             a798ca47-6e56-4649-ba88-cb4ecdf193ad}
+OutboundConnections        : {e60922a1-967e-42b8-ac4d-1bf699d492df, 5a540d2c-a61a-4010-ba87-44daeaefe055}
+Name                       : mspwvi-ctwcs21.cs.nycnet
+Partitions                 : {DC=cs,DC=nycnet, CN=Configuration,DC=cs,DC=nycnet,
+                             CN=Schema,CN=Configuration,DC=cs,DC=nycnet, DC=DomainDnsZones,DC=cs,DC=nycnet...}
+
+
+
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents>
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $ListOfRWDCsInADDomain | select osversion,roles,ipaddress
+
+OSVersion                         Roles                                         IPAddress
+---------                         -----                                         ---------
+Windows Server 2008 R2 Enterprise {}                                            10.155.62.62
+Windows Server 2008 R2 Enterprise {}                                            10.155.4.21
+Windows Server 2008 R2 Enterprise {SchemaRole, NamingRole, PdcRole, RidRole...} 10.155.62.63
+Windows Server 2008 R2 Enterprise {}                                            10.155.62.68
+Windows Server 2008 R2 Enterprise {}                                            10.155.60.48
+Windows Server 2008 R2 Enterprise {}                                            10.155.60.225
+Windows Server 2008 R2 Enterprise {}                                            10.155.60.226
+Windows Server 2008 R2 Enterprise {}                                            10.155.60.227
+Windows Server 2008 R2 Enterprise {}                                            10.155.60.228
+Windows Server 2008 R2 Enterprise {}                                            10.155.60.49
+Windows Server 2008 R2 Enterprise {}                                            10.141.6.23
+Windows Server 2008 R2 Enterprise {}                                            10.141.6.24
+Windows Server 2008 R2 Enterprise {}                                            10.155.62.66
+Windows Server 2008 R2 Enterprise {}                                            10.141.6.58
+Windows Server 2008 R2 Enterprise {}                                            10.141.6.59
+Windows Server 2008 R2 Enterprise {}                                            10.141.6.60
+Windows Server 2008 R2 Enterprise {}                                            10.141.6.61
+Windows Server 2012 R2 Datacenter {}                                            10.155.61.157
+Windows Server 2012 R2 Datacenter {}                                            10.155.61.158
+Windows Server 2012 R2 Datacenter {}                                            10.155.61.168
+Windows Server 2012 R2 Datacenter {}                                            10.141.6.121
+Windows Server 2012 R2 Datacenter {}                                            10.155.61.169
+Windows Server 2012 R2 Datacenter {}                                            10.155.61.170
+
+
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $ListOfRODCsInADDomain
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $SourceRWDCInADDomainFQDN="pspwvi-ctwcs11.cs.nycnet"
+
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $defaultNamingContext = (([ADSI]"LDAP://$SourceRWDCInADDomainFQDN/rootDSE").defaultNamingContext)
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $defaultNamingContext
+DC=cs,DC=nycnet
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $Searcher = New-Object DirectoryServices.DirectorySearcher
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $Searcher.Filter = "(&(objectClass=computer)(dNSHostName=$SourceRWDCInADDomainFQDN))"
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $Searcher.SearchRoot = "LDAP://" + $SourceRWDCInADDomainFQDN + "/OU=Domain Controllers," + $defaultNamingContext
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $dcObjectPath = $Searcher.FindAll() | %{$_.Path}
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $dcObjectPath
+LDAP://pspwvi-ctwcs11.cs.nycnet/CN=PSPWVI-CTWCS11,OU=Domain Controllers,DC=cs,DC=nycnet
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $defaultNamingContext
+DC=cs,DC=nycnet
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $SearcherDFSR = New-Object DirectoryServices.DirectorySearcher
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $SearcherDFSR.Filter = "(&(objectClass=msDFSR-Subscription)(name=SYSVOL Subscription))"
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $SearcherDFSR.SearchRoot = $dcObjectPath
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $dfsrSubscriptionObject = $SearcherDFSR.FindAll()
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $dfsrSubscriptionObject
+
+Path
+----
+LDAP://pspwvi-ctwcs11.cs.nycnet/CN=SYSVOL Subscription,CN=Domain System Volume,CN=DFSR-LocalSettings,CN=PSPWVI-CTWCS...
+
+
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> 
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $dfsrSubscriptionObject | % {$_.Properties."msdfsr-rootpath"}
+C:\Windows\SYSVOL\domain
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $SourceRWDCInADDomainFQDN
+pspwvi-ctwcs11.cs.nycnet
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $sysvolRootPathOnSourcingRWDC = $dfsrSubscriptionObject | %{$_.Properties."msdfsr-rootpath"}
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $scriptsUNCPathOnSourcingRWDC = "\\" + $SourceRWDCInADDomainFQDN + "\" + $($sysvolRootPathOnSourcingRWDC.Replace(":","$")) + "\Scripts"
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $scriptsUNCPathOnSourcingRWDC
+\\pspwvi-ctwcs11.cs.nycnet\C$\Windows\SYSVOL\domain\Scripts
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents>
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $tempObjectName = "SL_SYSVOL_Check_" + (Get-Date -f yyyyMMddHHmmss) + ".txt"
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Users\svc-ScienceLogic\Documents> $tempObjectName
+SL_SYSVOL_Check_20190805155712.txt
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Windows\SYSVOL\domain\scripts> Set-Content "TEMP OBJECT TO TEST AD REPLICATION" | Out-File -FilePath $tempObjectName
+TEMP OBJECT TO TEST AD REPLICATION
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Windows\SYSVOL\domain\scripts> $tempObjectName
+SL_SYSVOL_Check_20190805155712.txt
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Windows\SYSVOL\domain\scripts> gci .\SL_SYSVOL_Check_20190805155712.txt
+
+
+    Directory: C:\Windows\SYSVOL\domain\scripts
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-a----         8/5/2019   4:11 PM              0 SL_SYSVOL_Check_20190805155712.txt
+
+
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Windows\SYSVOL\domain\scripts>
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Windows\SYSVOL\domain\scripts> $objectPath = "\\PSPWVI-CTWCS15.cs.nycnet\Netlogon\" +
+$tempObjectName
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Windows\SYSVOL\domain\scripts> $objectPath
+\\PSPWVI-CTWCS15.cs.nycnet\Netlogon\SL_SYSVOL_Check_20190805155712.txt
+[pspwvi-ctwcs11.cs.nycnet]: $objectPath
+\\PSPWVI-CTWCS15.cs.nycnet\Netlogon\SL_SYSVOL_Check_20190805155712.txt
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Windows\SYSVOL\domain\scripts> Test-Path -Path $objectPath
+True
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Windows\SYSVOL\domain\scripts>
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Windows\SYSVOL\domain\scripts> Remove-Item $tempObjectName
+[pspwvi-ctwcs11.cs.nycnet]: PS C:\Windows\SYSVOL\domain\scripts>

@@ -1,0 +1,67 @@
+$ErrorActionPreference = "SilentlyContinue"
+$ProgressPreference = "SilentlyContinue"
+
+# Declare PSObject Array
+[PsObject[]]$domainStatus = @()
+
+# Get the host domain
+$sourceDomain = (Get-WmiObject -Class Win32_ComputerSystem).Domain
+
+try
+{
+    $objectDetails = Get-ADObject -Filter {ObjectClass -eq "trustedDomain"} -Server $sourceDomain -Properties Name, trustDirection, trustType, trustAttributes, Created, Modified | Select-Object -Property *
+    ForEach ($domain_obj In $objectDetails)
+    {
+                $output = ""
+		$domain = $domain_obj.Name
+                $trust_direction = $domain_obj.trustDirection
+		$trust_type = $domain_obj.trustType
+		$trust_attr = $domain_obj.trustAttributes
+		$trust_created = $domain_obj.Created
+		$trust_modified = $domain_obj.Modified
+		
+		$object = New-Object -TypeName PSObject
+                $object | Add-Member -Name 'Source' -MemberType NoteProperty -Value $sourceDomain
+                $object | Add-Member -Name 'Target' -MemberType NoteProperty -Value $domain
+                $object | Add-Member -Name 'Status' -MemberType NoteProperty -Value $null
+                $object | Add-Member -Name 'Direction' -MemberType NoteProperty -Value $trust_direction
+		$object | Add-Member -Name 'Type' -MemberType NoteProperty -Value $trust_type
+		$object | Add-Member -Name 'Attributes' -MemberType NoteProperty -Value $trust_attr
+		$object | Add-Member -Name 'Created' -MemberType NoteProperty -Value $trust_created
+		$object | Add-Member -Name 'Modified' -MemberType NoteProperty -Value $trust_modified
+                $object | Add-Member -Name 'ErrorMsg' -MemberType NoteProperty -Value $null
+		
+        # Run the test for Outbound and 2-way trusted domains only
+        If ($trust_direction -eq 2 -Or $trust_direction -eq 3) {       
+                  $command = "nltest /sc_verify:$domain 2>&1"
+                  # Verify the trust relationship - secure channel
+                  $output = cmd /c $command
+                  # Check if execution is successful
+                  $res = $output | ? { $_.Contains("Trust Verification Status") }
+
+		  If ($res -like "*0x0 NERR_Success*") {
+			    # Success
+			    $object.Status = 'VALID'
+		    }
+                   Else {
+			     $object.Status = 'ERROR'
+			     # Extract the status string
+			     $strip_string = "Trust Verification Status = "
+			     $err_str = $res.ToString().Substring($strip_string.length)    
+			     $object.ErrorMsg = $err_str
+                    }
+		    
+		} # End of outer if
+                Else {
+                       # Set Status as Skipped
+                       $object.Status = 'SKIPPED'
+                }
+		# Add object to the array
+		$domainStatus += $object
+    } # End of for
+}
+catch
+{
+}
+# Print the status array
+$domainStatus | Select-Object -Property *

@@ -1,0 +1,9 @@
+PS C:\windows\system32> $server = "10.152.107.115"
+PS C:\windows\system32> $defaultCtx = (([adsi]"LDAP://$server/rootDSE").defaultNamingContext)
+PS C:\windows\system32> $defaultCtx
+DC=csc,DC=nycnet
+PS C:\windows\system32> $searcher = [adsisearcher]"(&(objectClass=User)(sAMAccountName=svc-ScienceLogic))"
+PS C:\windows\system32> $searcher.SearchRoot = [adsi]"LDAP://$server/$defaultNamingContext"
+PS C:\windows\system32> $searcher.FindAll() | % { $_.Path }
+LDAP://10.152.107.115/CN=svc-ScienceLogic,CN=CSC Services,DC=csc,DC=nycnet
+PS C:\windows\system32>

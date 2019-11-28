@@ -1,0 +1,52 @@
+# Create self-signed certificate
+# Requires - Powershell v4.0 or later
+# Compatible with OS - Windows 2012 and above
+# NotAfter parameter works only on Windows Server 2016 or higher
+# New-SelfSignedCertificate -DnsName $fqdn -NotAfter (Get-Date).AddYears(3) -CertStoreLocation "Cert:\LocalMachine\My"
+
+# -- Default values --
+# KeyAlgorith - RSA
+# KeyLength - 2048
+# Validity - 365 days
+
+# To list all commands in PKI module, run this command
+# Get-Command -Module pki
+
+
+# To confirm if WirRM is listening on HTTPS, run this command
+# winrm enumerate winrm/config/listener
+
+# Get host FQDN
+$sysinfo = Get-WmiObject -Class Win32_ComputerSystem
+$fqdn = "{0}.{1}" -f $sysinfo.Name.ToLower(),$sysinfo.Domain.ToLower()
+
+$cert = New-SelfSignedCertificate -DnsName $fqdn -CertStoreLocation "Cert:\LocalMachine\My"
+$cert_id = $cert.Thumbprint
+
+# Set password to export certificate
+# $pw = ConvertTo-SecureString -String "Changeme" -Force -AsPlainText
+
+# Export certificate
+# Export-PfxCertificate -Cert Cert:\LocalMachine\My\$cert_id -FilePath $env:USERPROFILE\Desktop\$fqdn.pfx -Password $pw
+
+# Create HTTPS listener
+# winrm create winrm/config/Listener?Address=*+Transport=HTTPS  '@{Hostname="[serverfqdn]";CertificateThumbprint="[thumbprint]"}'
+New-WSManInstance winrm/config/listener -SelectorSet @{Address="*";Transport="HTTPS"} -ValueSet @{Port="5986";Hostname=$fqdn;CertificateThumbprint=$cert_id}
+
+
+# SCRIPT OUTPUT
+<#
+PS C:\Users\svc-sciencelogic\Documents\testing> .\CreateWinrmHTTPSListener.ps1
+
+
+wxf                 : http://schemas.xmlsoap.org/ws/2004/09/transfer
+a                   : http://schemas.xmlsoap.org/ws/2004/08/addressing
+w                   : http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd
+lang                : en-US
+Address             : http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous
+ReferenceParameters : ReferenceParameters
+
+
+
+PS C:\Users\svc-sciencelogic\Documents\testing>
+#>

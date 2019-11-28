@@ -1,0 +1,3 @@
+Get-PSDrive -PSProvider FileSystem | Select-Object Name, Used, Free | ForEach-Object {$cnt = 0; $total_used=0;
+$total_size=0}{$cnt = $cnt + 1; $total = ($_.Used + $_.Free); $total_used = $total_used + $_.Used; $total_size = $total_size + $total;
+Write-Host $_.Name "drive Size:" ("{0:N2}" -f ($total/1gb)) "%Used:"  ("{0:N2}" -f (($_.Used/$total)*100))}{Write-Host "File system total size:" ("{0:N2}" -f ($total_size/1gb)) "%Used:" ("{0:N2}" -f ($total_used/1gb)) -ForegroundColor Green}
